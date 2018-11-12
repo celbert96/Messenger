@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity
 {
@@ -39,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity
         registerBtn = findViewById(R.id.register_btn_register);
         existingAccountTV = findViewById(R.id.existing_account_tv_register);
 
+        //TODO: Confirm Password ET
+
         getSupportActionBar().hide();
 
         mAuth = FirebaseAuth.getInstance();
@@ -46,45 +50,7 @@ public class RegisterActivity extends AppCompatActivity
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = getText(usernameET);
-                String email = getText(emailET);
-                String passwd = getText(passwordET);
-                if(username.isEmpty() || email.isEmpty() || passwd.isEmpty())
-                {
-                    Toast.makeText(getApplicationContext(), "Please ensure all fields are filled out.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Intent intent = new Intent();
-                intent.setClass(getApplicationContext(), SelectImageActivity.class);
-                startActivity(intent);
-
-                /*
-                //register user in firebase
-                mAuth.createUserWithEmailAndPassword(email, passwd)
-                        .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    //FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(getApplicationContext(), "Successfully created account!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                        })
-
-                        .addOnFailureListener(RegisterActivity.this, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("FAILURE", "Failed to create user: " + e.getMessage());
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                */
-
-
+                registerNewUser();
             }
         });
 
@@ -93,11 +59,48 @@ public class RegisterActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), LoginActivity.class);
-                Toast.makeText(getApplicationContext(), "Existing Account Clicked.", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
         });
 
+
+    }
+
+    private void registerNewUser()
+    {
+        final String username = getText(usernameET);
+        String email = getText(emailET);
+        String passwd = getText(passwordET);
+        if(username.isEmpty() || email.isEmpty() || passwd.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(), "Please ensure all fields are filled out.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //register user in firebase
+        mAuth.createUserWithEmailAndPassword(email, passwd)
+                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            //FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = new Intent();
+                            intent.putExtra("username", username);
+                            intent.setClass(getApplicationContext(), SelectImageActivity.class);
+                            startActivity(intent);
+
+                        }
+                    }
+
+                })
+
+                .addOnFailureListener(RegisterActivity.this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("FAILURE", "Failed to create user: " + e.getMessage());
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
