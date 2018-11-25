@@ -17,8 +17,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SelectImageActivity"></activity>
-        <activity android:name=".MessagesActivity"></activity>
+        <activity android:name=".SelectImageActivity" />
+        <activity android:name=".MessagesActivity" />
+        <activity android:name=".NewMessageActivity"></activity>
     </application>
 
 </manifest>

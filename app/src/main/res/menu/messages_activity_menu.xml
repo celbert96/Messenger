@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/new_msg_btn"
+        android:icon="@drawable/baseline_create_white_18dp"
+        android:title="New Message"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/add_group_btn"
+        android:icon="@drawable/baseline_group_add_white_18dp"
+        android:title="Create New Group"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/msg_activity_logout"
+        android:title="Logout"
+        app:showAsAction="never"/>
+
+</menu>
