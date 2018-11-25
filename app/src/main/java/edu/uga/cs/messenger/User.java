@@ -13,6 +13,13 @@ public class User
         this.imageURL = imageURL;
     }
 
+    public User()
+    {
+        this.uid = "";
+        this.username = "";
+        this.imageURL = "";
+    }
+
     public String getImageURL() {
         return imageURL;
     }

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardview"
+        android:id="@+id/select_user_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,33 +15,33 @@
             android:padding="10dp">
 
             <ImageView
-                android:id="@+id/profilepicpreview"
+                android:id="@+id/profilepicpreview_select_user"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/default_profile_pic"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/username_msg"/>
+                app:layout_constraintEnd_toStartOf="@id/username_lbl_select_user"/>
 
             <TextView
-                android:id="@+id/username_msg"
+                android:id="@+id/username_lbl_select_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TEST"
                 android:textSize="15sp"
                 android:layout_marginLeft="10dp"
-                app:layout_constraintStart_toEndOf="@id/profilepicpreview"
+                app:layout_constraintStart_toEndOf="@id/profilepicpreview_select_user"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/content_msg"/>
+                app:layout_constraintBottom_toTopOf="@id/email_lbl_select_user"/>
             <TextView
-                android:id="@+id/content_msg"
+                android:id="@+id/email_lbl_select_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="This is a test message. Hey, what's up?"
+                android:text="coolemail@gmail.com"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@id/profilepicpreview"
+                android:layout_marginLeft="10dp"
+                app:layout_constraintStart_toEndOf="@id/profilepicpreview_select_user"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/username_msg"
+                app:layout_constraintTop_toBottomOf="@id/username_lbl_select_user"
                 android:layout_marginTop="2dp"/>
 
         </android.support.constraint.ConstraintLayout>

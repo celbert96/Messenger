@@ -1,5 +1,6 @@
 package edu.uga.cs.messenger;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -7,13 +8,22 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -36,16 +46,9 @@ public class MessagesActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(layoutManager);
 
-        ArrayList<TestUser> testUsers = new ArrayList<>();
-        testUsers.add(new TestUser("Chris", "This is a test message", R.drawable.default_profile_pic));
-        testUsers.add(new TestUser("Chris", "This is a test message", R.drawable.default_profile_pic));
-        testUsers.add(new TestUser("Chris", "This is a test message", R.drawable.default_profile_pic));
-        testUsers.add(new TestUser("Chris", "This is a test message", R.drawable.default_profile_pic));
-        testUsers.add(new TestUser("Chris", "This is a test message", R.drawable.default_profile_pic));
-        testUsers.add(new TestUser("Chris", "This is a test message", R.drawable.default_profile_pic));
+        getUsersFromFirebaseDatabase();
 
-        RVAdapter adapter = new RVAdapter(testUsers);
-        rv.setAdapter(adapter);
+
 
     }
 
@@ -60,12 +63,51 @@ public class MessagesActivity extends AppCompatActivity {
     public void onBackPressed() {
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.new_msg_btn:
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(), NewMessageActivity.class);
+                startActivity(intent);
+        }
+
+        return true;
+    }
+
+    private void getUsersFromFirebaseDatabase()
+    {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            ArrayList<User> userList = new ArrayList<>();
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    User user = snapshot.getValue(User.class);
+                    Log.d("GETUSERSFROMFIREBASE:", user.getUid() + " " +  user.getUsername() + " " + user.getImageURL());
+                    userList.add(user);
+                }
+
+                RVAdapter adapter = new RVAdapter(userList);
+                rv.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
 
 
 class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
 {
-    ArrayList<TestUser> data;
+    ArrayList<User> data;
     public static class UserViewHolder extends RecyclerView.ViewHolder {
 
         CardView cardView;
@@ -82,7 +124,7 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
         }
     }
 
-    public RVAdapter(ArrayList<TestUser> data)
+    public RVAdapter(ArrayList<User> data)
     {
         this.data = data;
     }
@@ -98,9 +140,9 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RVAdapter.UserViewHolder userViewHolder, int i) {
-        userViewHolder.profilePic.setImageResource(data.get(i).photoID);
-        userViewHolder.usernameLabel.setText(data.get(i).username);
-        userViewHolder.contentLabel.setText(data.get(i).content);
+        Picasso.get().load(data.get(i).getImageURL()).into(userViewHolder.profilePic);
+        userViewHolder.usernameLabel.setText(data.get(i).getUsername());
+        userViewHolder.contentLabel.setText(data.get(i).getUid());
     }
 
     @Override
@@ -114,18 +156,4 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
     }
 }
 
-
-class TestUser {
-    String username;
-    String content;
-    int photoID;
-
-    public TestUser(String username, String content, int photoID)
-    {
-        this.username = username;
-        this.content = content;
-        this.photoID = photoID;
-    }
-
-}
 
