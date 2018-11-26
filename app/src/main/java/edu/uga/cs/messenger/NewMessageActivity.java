@@ -59,6 +59,8 @@ public class NewMessageActivity extends AppCompatActivity {
 
                 SelectUserAdapter adapter = new SelectUserAdapter(userList);
                 rv.setAdapter(adapter);
+                rv.setNestedScrollingEnabled(false);
+                rv.setHasFixedSize(true);
             }
 
             @Override

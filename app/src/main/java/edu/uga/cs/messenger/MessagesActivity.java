@@ -93,7 +93,10 @@ public class MessagesActivity extends AppCompatActivity {
                 }
 
                 RVAdapter adapter = new RVAdapter(userList);
+                adapter.setHasStableIds(true);
                 rv.setAdapter(adapter);
+                rv.setNestedScrollingEnabled(false);
+                rv.setHasFixedSize(true);
             }
 
             @Override
