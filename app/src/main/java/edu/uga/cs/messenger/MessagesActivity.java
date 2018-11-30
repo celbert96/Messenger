@@ -41,7 +41,9 @@ public class MessagesActivity extends AppCompatActivity {
 
 
         rv = findViewById(R.id.messages_rv);
+        rv.setNestedScrollingEnabled(false);
         rv.setHasFixedSize(true);
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(layoutManager);
@@ -95,8 +97,7 @@ public class MessagesActivity extends AppCompatActivity {
                 RVAdapter adapter = new RVAdapter(userList);
                 adapter.setHasStableIds(true);
                 rv.setAdapter(adapter);
-                rv.setNestedScrollingEnabled(false);
-                rv.setHasFixedSize(true);
+
             }
 
             @Override
@@ -143,7 +144,7 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RVAdapter.UserViewHolder userViewHolder, int i) {
-        Picasso.get().load(data.get(i).getImageURL()).into(userViewHolder.profilePic);
+        Picasso.get().load(data.get(i).getImageURL()).fit().into(userViewHolder.profilePic);
         userViewHolder.usernameLabel.setText(data.get(i).getUsername());
         userViewHolder.contentLabel.setText(data.get(i).getUid());
     }

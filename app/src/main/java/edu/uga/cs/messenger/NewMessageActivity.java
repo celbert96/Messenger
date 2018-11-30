@@ -1,5 +1,7 @@
 package edu.uga.cs.messenger;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +35,9 @@ public class NewMessageActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Select User");
 
         rv = findViewById(R.id.select_user_rv);
+        rv.setNestedScrollingEnabled(false);
         rv.setHasFixedSize(true);
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(linearLayoutManager);
@@ -58,9 +62,9 @@ public class NewMessageActivity extends AppCompatActivity {
                 }
 
                 SelectUserAdapter adapter = new SelectUserAdapter(userList);
+                adapter.setHasStableIds(true);
                 rv.setAdapter(adapter);
-                rv.setNestedScrollingEnabled(false);
-                rv.setHasFixedSize(true);
+
             }
 
             @Override
@@ -84,9 +88,18 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
         TextView contentLabel;
         ImageView profilePic;
 
-        public UserViewHolder(@NonNull View itemView) {
+        public UserViewHolder(@NonNull final View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.select_user_cv);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setClass(itemView.getContext(), ChatActivity.class);
+                    itemView.getContext().startActivity(intent);
+
+                }
+            });
             usernameLabel = itemView.findViewById(R.id.username_lbl_select_user);
             contentLabel = itemView.findViewById(R.id.email_lbl_select_user);
             profilePic = itemView.findViewById(R.id.profilepicpreview_select_user);
@@ -108,10 +121,20 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SelectUserAdapter.UserViewHolder userViewHolder, int i) {
-        Picasso.get().load(data.get(i).getImageURL()).into(userViewHolder.profilePic);
+    public void onBindViewHolder(@NonNull final SelectUserAdapter.UserViewHolder userViewHolder, int i) {
+        Picasso.get().load(data.get(i).getImageURL()).fit().into(userViewHolder.profilePic);
         userViewHolder.usernameLabel.setText(data.get(i).getUsername());
         userViewHolder.contentLabel.setText(data.get(i).getUid());
+
+        userViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(view.getContext(), ChatActivity.class);
+                intent.putExtra("USERNAME", data.get(userViewHolder.getAdapterPosition()).getUsername());
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -123,4 +146,6 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
+
+
 }
