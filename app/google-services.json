@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "233009529177",
-    "firebase_url": "https://messenger-c2ab3.firebaseio.com",
-    "project_id": "messenger-c2ab3",
-    "storage_bucket": "messenger-c2ab3.appspot.com"
+    "project_number": "50700449331",
+    "firebase_url": "https://messenger-69f47.firebaseio.com",
+    "project_id": "messenger-69f47",
+    "storage_bucket": "messenger-69f47.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:233009529177:android:54f884805285a083",
+        "mobilesdk_app_id": "1:50700449331:android:254b973ec4699c9a",
         "android_client_info": {
           "package_name": "edu.uga.cs.messenger"
         }
       },
       "oauth_client": [
         {
-          "client_id": "233009529177-u1bd63imu4m430aj850tr80n95c4i78c.apps.googleusercontent.com",
+          "client_id": "50700449331-3unutgu295os0biduek71hc2dg2l5p59.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDXsf_S2l-tW3HOi7IezIYHPM_RPTHbDBQ"
+          "current_key": "AIzaSyA99cZw67wnmrDljrPJVE2NdlnuzHy-Qvw"
         }
       ],
       "services": {
