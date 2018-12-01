@@ -92,27 +92,55 @@ public class SelectImageActivity extends AppCompatActivity
     private void uploadImage()
     {
         String filename = UUID.randomUUID().toString();
-        final StorageReference ref = FirebaseStorage.getInstance().getReference("/images/" + filename);
-        ref.putFile(selectedPhotoURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("URI = ", uri.toString());
-                        profilePicDownloadUrl = uri.toString();
-                        saveUserToDatabase();
-                    }
-                });
 
-                ref.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("FAILURE", e.getMessage());
-                    }
-                });
-            }
-        });
+        if (selectedPhotoURI == null) {
+            selectedPhotoURI = Uri.parse("android.resource://edu.uga.cs.messenger/drawable/default_profile_pic");
+            //Messenger/app/src/main/res/drawable/default_profile_pic.jpg
+            final StorageReference ref = FirebaseStorage.getInstance().getReference("/image/" + filename);
+            ref.putFile(selectedPhotoURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d("URI = ", uri.toString());
+                            profilePicDownloadUrl = uri.toString();
+                            saveUserToDatabase();
+                        }
+                    });
+
+                    ref.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("FAILURE", e.getMessage());
+                        }
+                    });
+                }
+            });
+
+        } else {
+            final StorageReference ref = FirebaseStorage.getInstance().getReference("/image/" + filename);
+                ref.putFile(selectedPhotoURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d("URI = ", uri.toString());
+                            profilePicDownloadUrl = uri.toString();
+                            saveUserToDatabase();
+                        }
+                    });
+
+                    ref.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("FAILURE", e.getMessage());
+                        }
+                    });
+                }
+            });
+        }
 
     }
 
