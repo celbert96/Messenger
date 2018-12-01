@@ -96,7 +96,7 @@ public class SelectImageActivity extends AppCompatActivity
         if (selectedPhotoURI == null) {
             selectedPhotoURI = Uri.parse("android.resource://edu.uga.cs.messenger/drawable/default_profile_pic");
             //Messenger/app/src/main/res/drawable/default_profile_pic.jpg
-            final StorageReference ref = FirebaseStorage.getInstance().getReference("/image/" + filename);
+            final StorageReference ref = FirebaseStorage.getInstance().getReference("/images/" + filename);
             ref.putFile(selectedPhotoURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -119,7 +119,7 @@ public class SelectImageActivity extends AppCompatActivity
             });
 
         } else {
-            final StorageReference ref = FirebaseStorage.getInstance().getReference("/image/" + filename);
+            final StorageReference ref = FirebaseStorage.getInstance().getReference("/images/" + filename);
                 ref.putFile(selectedPhotoURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
