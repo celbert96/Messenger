@@ -83,6 +83,8 @@ public class ChatActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
+                                getMessagesFromFirebaseDatabase();
+                                msgET.setText("");
                                 Log.d("SendMessage", "Success");
                             }
                             else
@@ -110,7 +112,8 @@ public class ChatActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     Message message = snapshot.getValue(Message.class);
-                    messages.add(message);
+                    if(isValidMessage(message))
+                        messages.add(message);
                 }
 
                 ChatLogAdapter adapter = new ChatLogAdapter(messages);
@@ -124,6 +127,12 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean isValidMessage(Message m)
+    {
+        return (m.getSenderID().equals(currentUID) && m.getRecipientID().equals(recipientUser.getUid())) ||
+                (m.getRecipientID().equals(currentUID) && m.getSenderID().equals(recipientUser.getUid()));
     }
 }
 
