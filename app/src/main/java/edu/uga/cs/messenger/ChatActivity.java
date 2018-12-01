@@ -83,6 +83,8 @@ public class ChatActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
+                                getMessagesFromFirebaseDatabase();
+                                msgET.setText("");
                                 Log.d("SendMessage", "Success");
                             }
                             else
