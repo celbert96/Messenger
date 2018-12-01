@@ -2,7 +2,6 @@ package edu.uga.cs.messenger;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -16,8 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,10 +28,8 @@ import java.util.ArrayList;
 
 public class MessagesActivity extends AppCompatActivity {
 
-    //TODO (Messages 1): Create Firebase Database for Messages
-    //TODO (Messages 2): Create RecyclerView to display convos + user profile pics
-
     private RecyclerView rv;
+    private String currentUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +37,7 @@ public class MessagesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_messages);
 
 
+        currentUID = FirebaseAuth.getInstance().getUid();
         rv = findViewById(R.id.messages_rv);
         rv.setNestedScrollingEnabled(false);
         rv.setHasFixedSize(true);
@@ -48,12 +46,17 @@ public class MessagesActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(layoutManager);
 
-        getUsersFromFirebaseDatabase();
+        loadUsers();
 
 
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUsers();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,8 +82,9 @@ public class MessagesActivity extends AppCompatActivity {
         return true;
     }
 
-    private void getUsersFromFirebaseDatabase()
+    private void getUsersFromFirebaseDatabase(final ArrayList<String> uids)
     {
+        Log.d("UIDSSIZE", Integer.toString(uids.size()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             ArrayList<User> userList = new ArrayList<>();
@@ -91,12 +95,14 @@ public class MessagesActivity extends AppCompatActivity {
                 {
                     User user = snapshot.getValue(User.class);
                     Log.d("GETUSERSFROMFIREBASE:", user.getUid() + " " +  user.getUsername() + " " + user.getImageURL());
-                    userList.add(user);
+                    if(uids.contains(user.getUid()))
+                        userList.add(user);
                 }
 
                 RVAdapter adapter = new RVAdapter(userList);
                 adapter.setHasStableIds(true);
                 rv.setAdapter(adapter);
+
 
             }
 
@@ -105,6 +111,59 @@ public class MessagesActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void loadUsers()
+    {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/messages");
+        final ArrayList<String> uids = new ArrayList<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Message message = snapshot.getValue(Message.class);
+                    if(isValidMessage(message))
+                    {
+                        uids.add(getUIDFromMessage(message));
+                        getUsersFromFirebaseDatabase(uids);
+
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+
+        });
+
+        Log.d("UIDSIZEUIDS", Integer.toString(uids.size()));
+    }
+
+    private boolean isValidMessage(Message m)
+    {
+        return (m.getSenderID().equals(currentUID)) ||
+                (m.getRecipientID().equals(currentUID));
+    }
+
+    private String getUIDFromMessage(Message m)
+    {
+        if(m.getSenderID().equals(currentUID))
+        {
+            return m.getRecipientID();
+        }
+        else
+        {
+            return m.getSenderID();
+        }
     }
 }
 
@@ -119,12 +178,13 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
         TextView contentLabel;
         ImageView profilePic;
 
-        public UserViewHolder(@NonNull View itemView) {
+        public UserViewHolder(@NonNull final View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardview);
             usernameLabel = itemView.findViewById(R.id.username_msg);
             contentLabel = itemView.findViewById(R.id.content_msg);
             profilePic = itemView.findViewById(R.id.profilepicpreview);
+
         }
     }
 
@@ -143,10 +203,21 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RVAdapter.UserViewHolder userViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final RVAdapter.UserViewHolder userViewHolder, int i) {
         Picasso.get().load(data.get(i).getImageURL()).fit().into(userViewHolder.profilePic);
         userViewHolder.usernameLabel.setText(data.get(i).getUsername());
         userViewHolder.contentLabel.setText(data.get(i).getUid());
+
+        userViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(view.getContext(), ChatActivity.class);
+                intent.putExtra("USER", data.get(userViewHolder.getAdapterPosition()));
+                view.getContext().startActivity(intent);
+            }
+        });
+
     }
 
     @Override

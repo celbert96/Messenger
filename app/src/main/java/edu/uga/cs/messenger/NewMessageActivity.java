@@ -91,15 +91,6 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
         public UserViewHolder(@NonNull final View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.select_user_cv);
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.setClass(itemView.getContext(), ChatActivity.class);
-                    itemView.getContext().startActivity(intent);
-
-                }
-            });
             usernameLabel = itemView.findViewById(R.id.username_lbl_select_user);
             contentLabel = itemView.findViewById(R.id.email_lbl_select_user);
             profilePic = itemView.findViewById(R.id.profilepicpreview_select_user);

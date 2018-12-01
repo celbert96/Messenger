@@ -119,6 +119,7 @@ public class ChatActivity extends AppCompatActivity {
                 ChatLogAdapter adapter = new ChatLogAdapter(messages);
                 adapter.setHasStableIds(true);
                 rv.setAdapter(adapter);
+                rv.scrollToPosition(adapter.getItemCount() - 1);
 
             }
 
