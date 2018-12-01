@@ -131,7 +131,7 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(view.getContext(), ChatActivity.class);
-                intent.putExtra("USERNAME", data.get(userViewHolder.getAdapterPosition()).getUsername());
+                intent.putExtra("USER", data.get(userViewHolder.getAdapterPosition()));
                 view.getContext().startActivity(intent);
             }
         });

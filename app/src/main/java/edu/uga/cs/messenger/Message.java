@@ -3,17 +3,25 @@ package edu.uga.cs.messenger;
 public class Message {
     private String recipientID;
     private String senderID;
-    private long timestamp;
-    private String messageID;
+    private String timestamp;
     private String content;
 
-    public Message(String recipientID, String senderID, long timestamp, String messageID, String content) {
+    public Message(String recipientID, String senderID, String timestamp,String content) {
         this.recipientID = recipientID;
         this.senderID = senderID;
         this.timestamp = timestamp;
-        this.messageID = messageID;
         this.content = content;
     }
+
+    //Firebase requires a no-arg constructor
+    public Message()
+    {
+        this.recipientID = "";
+        this.senderID = "";
+        this.timestamp = "";
+        this.content = "";
+    }
+
 
     public String getRecipientID() {
         return recipientID;
@@ -29,18 +37,11 @@ public class Message {
         this.senderID = senderID;
     }
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public String getMessageID() {
-        return messageID;
-    }
-    public void setMessageID(String messageID) {
-        this.messageID = messageID;
     }
 
     public String getContent() {

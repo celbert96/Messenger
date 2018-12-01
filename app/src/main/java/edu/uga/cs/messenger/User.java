@@ -1,6 +1,8 @@
 package edu.uga.cs.messenger;
 
-public class User
+import java.io.Serializable;
+
+public class User implements Serializable
 {
     private String uid;
     private String username;
