@@ -27,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity
     private EditText passwordET;
     private Button registerBtn;
     private TextView existingAccountTV;
+    private TextView forgotPswdTV;
     private FirebaseAuth mAuth;
 
     @Override
@@ -40,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity
         passwordET = findViewById(R.id.passwd_et_register);
         registerBtn = findViewById(R.id.register_btn_register);
         existingAccountTV = findViewById(R.id.existing_account_tv_register);
+        forgotPswdTV = findViewById(R.id.fgt_pswd);
 
         //TODO: Confirm Password ET
 
@@ -59,6 +61,15 @@ public class RegisterActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        forgotPswdTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(), ForgotPswdActivity.class);
                 startActivity(intent);
             }
         });
