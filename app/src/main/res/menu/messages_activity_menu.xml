@@ -9,13 +9,6 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/add_group_btn"
-        android:icon="@drawable/baseline_group_add_white_18dp"
-        android:title="Create New Group"
-        app:showAsAction="never"
-        />
-
-    <item
         android:id="@+id/msg_activity_logout"
         android:title="Logout"
         app:showAsAction="never"/>

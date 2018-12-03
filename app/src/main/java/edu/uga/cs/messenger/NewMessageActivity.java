@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +52,8 @@ public class NewMessageActivity extends AppCompatActivity {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             ArrayList<User> userList = new ArrayList<>();
+            String currentUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -58,7 +61,9 @@ public class NewMessageActivity extends AppCompatActivity {
                 {
                     User user = snapshot.getValue(User.class);
                     Log.d("GETUSERSFROMFIREBASE:", user.getUid() + " " +  user.getUsername() + " " + user.getImageURL());
-                    userList.add(user);
+
+                    if(!user.getUid().equals(currentUID))
+                        userList.add(user);
                 }
 
                 SelectUserAdapter adapter = new SelectUserAdapter(userList);
@@ -85,14 +90,12 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
 
         CardView cardView;
         TextView usernameLabel;
-        TextView contentLabel;
         ImageView profilePic;
 
         public UserViewHolder(@NonNull final View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.select_user_cv);
             usernameLabel = itemView.findViewById(R.id.username_lbl_select_user);
-            contentLabel = itemView.findViewById(R.id.email_lbl_select_user);
             profilePic = itemView.findViewById(R.id.profilepicpreview_select_user);
         }
     }
@@ -115,7 +118,6 @@ class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserViewH
     public void onBindViewHolder(@NonNull final SelectUserAdapter.UserViewHolder userViewHolder, int i) {
         Picasso.get().load(data.get(i).getImageURL()).fit().into(userViewHolder.profilePic);
         userViewHolder.usernameLabel.setText(data.get(i).getUsername());
-        userViewHolder.contentLabel.setText(data.get(i).getUid());
 
         userViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

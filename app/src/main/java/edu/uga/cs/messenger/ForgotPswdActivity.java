@@ -73,7 +73,7 @@ public class ForgotPswdActivity extends AppCompatActivity
                             } else {
                                 String er = task.getException().getMessage();
                                 Log.d("Password Reset", "Failed");
-                                Toast.makeText(ForgotPswdActivity.this, "Error occured: " + er, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ForgotPswdActivity.this, "Error occurred: " + er, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

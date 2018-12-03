@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MessagesActivity extends AppCompatActivity {
 
@@ -73,10 +74,20 @@ public class MessagesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.new_msg_btn:
+            case R.id.new_msg_btn: {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), NewMessageActivity.class);
                 startActivity(intent);
+                break;
+            }
+
+            case R.id.msg_activity_logout: {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         }
 
         return true;
@@ -95,7 +106,7 @@ public class MessagesActivity extends AppCompatActivity {
                 {
                     User user = snapshot.getValue(User.class);
                     Log.d("GETUSERSFROMFIREBASE:", user.getUid() + " " +  user.getUsername() + " " + user.getImageURL());
-                    if(uids.contains(user.getUid()))
+                    if(uids.contains(user.getUid()) && !user.getUid().equals(currentUID))
                         userList.add(user);
                 }
 
@@ -151,7 +162,7 @@ public class MessagesActivity extends AppCompatActivity {
     private boolean isValidMessage(Message m)
     {
         return (m.getSenderID().equals(currentUID)) ||
-                (m.getRecipientID().equals(currentUID));
+                (m.getRecipientID().equals(currentUID)) && !m.getSenderID().equals(m.getRecipientID());
     }
 
     private String getUIDFromMessage(Message m)
@@ -175,14 +186,12 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
 
         CardView cardView;
         TextView usernameLabel;
-        TextView contentLabel;
         ImageView profilePic;
 
         public UserViewHolder(@NonNull final View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardview);
             usernameLabel = itemView.findViewById(R.id.username_msg);
-            contentLabel = itemView.findViewById(R.id.content_msg);
             profilePic = itemView.findViewById(R.id.profilepicpreview);
 
         }
@@ -206,8 +215,6 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.UserViewHolder>
     public void onBindViewHolder(@NonNull final RVAdapter.UserViewHolder userViewHolder, int i) {
         Picasso.get().load(data.get(i).getImageURL()).fit().into(userViewHolder.profilePic);
         userViewHolder.usernameLabel.setText(data.get(i).getUsername());
-        userViewHolder.contentLabel.setText(data.get(i).getUid());
-
         userViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

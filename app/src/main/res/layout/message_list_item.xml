@@ -3,6 +3,7 @@
 <android.support.v7.widget.CardView android:id="@+id/cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -24,11 +25,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TEST"
-                android:textSize="15sp"
-                android:layout_marginLeft="10dp"
+                android:textSize="20sp"
+                android:layout_marginLeft="20dp"
                 app:layout_constraintStart_toEndOf="@id/profilepicpreview"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/content_msg"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <!--
             <TextView
                 android:id="@+id/content_msg"
                 android:layout_width="wrap_content"
@@ -39,7 +42,7 @@
                 app:layout_constraintStart_toEndOf="@id/profilepicpreview"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/username_msg"
-                android:layout_marginTop="2dp"/>
+                android:layout_marginTop="2dp"/>-->
 
         </android.support.constraint.ConstraintLayout>
 

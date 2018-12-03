@@ -65,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(linearLayoutManager);
 
-        getMessagesFromFirebaseDatabase();
+        getMessagesFromFirebaseDatabase(recipientUser);
 
         msgET = findViewById(R.id.chat_msg_et);
         sendBtn = findViewById(R.id.chat_msg_send_btn);
@@ -83,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
-                                getMessagesFromFirebaseDatabase();
+                                getMessagesFromFirebaseDatabase(recipientUser);
                                 msgET.setText("");
                                 Log.d("SendMessage", "Success");
                             }
@@ -101,7 +101,8 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void getMessagesFromFirebaseDatabase()
+
+    private void getMessagesFromFirebaseDatabase(final User recipientUser)
     {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/messages");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -116,7 +117,7 @@ public class ChatActivity extends AppCompatActivity {
                         messages.add(message);
                 }
 
-                ChatLogAdapter adapter = new ChatLogAdapter(messages);
+                ChatLogAdapter adapter = new ChatLogAdapter(messages, recipientUser);
                 adapter.setHasStableIds(true);
                 rv.setAdapter(adapter);
                 rv.scrollToPosition(adapter.getItemCount() - 1);
@@ -147,6 +148,7 @@ class ChatLogAdapter extends RecyclerView.Adapter
 {
 
     ArrayList<Message> data; //Message data to be displayed
+    User recipientUser;
 
     //constants to determine which ViewHolder to inflate
     private static final int VIEW_MESSAGE_RECIPIENT = 1;
@@ -169,12 +171,13 @@ class ChatLogAdapter extends RecyclerView.Adapter
             timestampLabel = itemView.findViewById(R.id.timestamp_lbl_chat_left);
         }
 
-        public void bind(Message message)
+        public void bind(Message message, User recipientUser)
         {
-            usernameLabel.setText("Them");
+            usernameLabel.setText(recipientUser.getUsername());
             contentLabel.setText(message.getContent());
             timestampLabel.setText(message.getTimestamp());
         }
+
     }
 
     //Will be used when displaying sent messages
@@ -220,9 +223,10 @@ class ChatLogAdapter extends RecyclerView.Adapter
 
 
     //constructor for the ChatLogAdapter
-    public ChatLogAdapter(ArrayList<Message> data)
+    public ChatLogAdapter(ArrayList<Message> data, User recipientUser)
     {
         this.data = data;
+        this.recipientUser = recipientUser;
     }
 
     //Inflate the correct view based on the value of viewType
@@ -256,7 +260,7 @@ class ChatLogAdapter extends RecyclerView.Adapter
         {
             case VIEW_MESSAGE_RECIPIENT:
             {
-                ((ChatLogAdapter.LeftMessageViewHolder) viewHolder).bind(m);
+                ((ChatLogAdapter.LeftMessageViewHolder) viewHolder).bind(m, recipientUser);
                 break;
             }
             case VIEW_MESSAGE_SENDER:
@@ -278,41 +282,4 @@ class ChatLogAdapter extends RecyclerView.Adapter
     }
 
 
-}
-
-class TestMessage
-{
-    private String username;
-    private String msg;
-    private String timestamp;
-    public TestMessage(String username, String msg, String timestamp)
-    {
-        this.timestamp = timestamp;
-        this.msg  = msg;
-        this.username = username;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
